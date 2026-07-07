@@ -166,5 +166,4 @@ arch/arm64/configs/r5q_eur_open_defconfig  -- LOG_BUF_SHIFT=19 (debug)
 - RPMh regulator integration for voltage control (`regulator_set_voltage()` on
   `VDD_CX_LEVEL`)
 - L3 cache overclock (same PLL mechanism, cluster 0)
-- GPU overclock (separate driver, `kgsl-3d0`)
 - Memory bus (DDR) overclock via `devfreq`
