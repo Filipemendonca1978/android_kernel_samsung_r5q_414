@@ -1057,8 +1057,10 @@ static int clk_osm_read_lut(struct platform_device *pdev, struct clk_osm *c)
 				u32 vc = (vd & GENMASK(21, 16)) >> 16;
 				u32 nv = ol + 56;
 				clk_osm_write_reg(c, (vc << 16) | nv, voff);
-				pr_emerg("OSM_OC: perfpcl volt %umV->%umV\n",
-					 ol, nv);
+				u32 vd2 = clk_osm_read_reg(c, voff);
+				u32 ol2 = vd2 & GENMASK(11, 0);
+				pr_emerg("OSM_OC: perfpcl volt %umV write %umV readback %umV\n",
+					 ol, nv, ol2);
 			}
 		}
 
