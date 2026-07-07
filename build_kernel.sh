@@ -5,12 +5,11 @@ args="$*"
 
 pack()
 {
-	rm boot.img boot.tar dtb kernel ramdisk.cpio
 	magiskboot unpack boot
 	cp Image kernel
 	magiskboot repack boot boot.img
 	7z a -ttar ./boot.tar ./boot.img
-	rm boot.img dtb kernel ramdisk.cpio
+	rm boot.img dtb kernel ramdisk.cpio boot
 }
 
 if [[ ! -d "./toolchain" ]]; then
