@@ -54,3 +54,10 @@ if [[ "$1" == "flash" ]]; then
 	odin4 -a boot.tar
 	cd ../../../..'
 fi
+
+if [[ "$(whoami)" == "filip" ]]; then
+	git add .
+	read -p "Commit? " usrcommit
+	git commit $usrcommit
+	git push -u origin main
+fi
