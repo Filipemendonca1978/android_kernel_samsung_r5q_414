@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 #r5q build sh
 
+args="$*"
+
 pack()
 {
 	rm boot.img boot.tar dtb kernel ramdisk.cpio
@@ -37,11 +39,18 @@ build()
 	$MAKE -j$(nproc) -C $(pwd) O=$(pwd)/out $KERNEL_MAKE_ENV ARCH=arm64 CROSS_COMPILE=$BUILD_CROSS_COMPILE REAL_CC=$KERNEL_LLVM_BIN CLANG_TRIPLE=$CLANG_TRIPLE
 }
 
-setup
-build
+if [[ "${args,,}" == *"--clean"* ]]; then
+	rm -rf out/
+fi
 
-if [[ "$1" == "flash" ]]; then
+if [[ "${args,,}" != *"--nobuild"* ]]; then
+	setup
+	build
+fi
+
+if [[ "${args,,}" == *"--flash"* && -d out ]]; then
 	cd out/arch/arm64/boot/
+	cp ../../../../.boot ./boot
 	pack
 	echo "Waiting for ADB Connection" 
 	adb wait-for-device
@@ -52,12 +61,24 @@ if [[ "$1" == "flash" ]]; then
 	done
 	echo "Device detected"
 	odin4 -a boot.tar
-	cd ../../../..'
+	cd ../../../..
+elif [[ "${args,,}" == *"--flash"* ]]; then
+	echo "out folder not found!"
 fi
 
 if [[ "$(whoami)" == "filip" ]]; then
+	read -p "Do you want to commit those changes? (y/n) " cyn
+	if [[ "$cyn" == "n" ]]; then
+		exit 0
+	fi
+	read -p "Do you want to change the current branch? (y/n) " byn
+	if [[ "$byn" == "y" ]]; then
+		read -p "Name it " bname
+		git switch $bname
+	fi
 	git add .
-	read -p "Commit? " usrcommit
-	git commit $usrcommit
+	read -p "Commit name? " usrcommit
+	git commit -m "$usrcommit"
 	git push -u origin main
 fi
+

@@ -615,8 +615,8 @@ osm_cpufreq_target_index(struct cpufreq_policy *policy, unsigned int index)
 
 		if (freq == 2496000)
 			oc_lval = 130;
-		else if (freq == 2956800)
-			oc_lval = 154;
+		else if (freq == 2995200)
+			oc_lval = 156;
 
 		if (oc_lval) {
 			u32 mode;
@@ -755,8 +755,8 @@ static int osm_cpufreq_cpu_init(struct cpufreq_policy *policy)
 		}
 		if (last >= 0 && table[last].frequency == 2841600 &&
 		    parent->cluster_num == 3) {
-			table[last].frequency = 2956800;
-			table[last].driver_data = 2956800;
+			table[last].frequency = 2995200;
+			table[last].driver_data = 2995200;
 			pr_emerg("CPUFREQ_OC: CPU%d entry %d boosted to %u KHz\n",
 				 policy->cpu, last, table[last].frequency);
 		}
@@ -1046,8 +1046,7 @@ static int clk_osm_read_lut(struct platform_device *pdev, struct clk_osm *c)
 			pr_emerg("OSM_OC: perfcl entry %zu boosted to %lu Hz\n",
 				 j - 1, c->osm_table[j - 1].frequency);
 		} else if (c->cluster_num == 3) {
-			/* prime OC with voltage boost */
-			c->osm_table[j - 1].frequency = 2956800000UL;
+			c->osm_table[j - 1].frequency = 2995200000UL;
 			pr_emerg("OSM_OC: perfpcl entry %zu boosted to %lu Hz\n",
 				 j - 1, c->osm_table[j - 1].frequency);
 
@@ -1056,7 +1055,7 @@ static int clk_osm_read_lut(struct platform_device *pdev, struct clk_osm *c)
 				u32 vd = clk_osm_read_reg(c, voff);
 				u32 ol = vd & GENMASK(11, 0);
 				u32 vc = (vd & GENMASK(21, 16)) >> 16;
-				u32 nv = ol + 24;
+				u32 nv = ol + 32;
 				clk_osm_write_reg(c, (vc << 16) | nv, voff);
 				pr_emerg("OSM_OC: perfpcl volt %umV->%umV\n",
 					 ol, nv);
